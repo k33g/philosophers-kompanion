@@ -1,11 +1,15 @@
+import org.gradle.api.tasks.JavaExec
+import org.gradle.script.lang.kotlin.extra
+import org.gradle.script.lang.kotlin.kotlinModule
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.js.translate.context.Namer.kotlin
 
 buildscript {
     var kotlin_version: String by extra
     kotlin_version = "1.2.30"
 
     repositories {
-        mavenCentral()
+        jcenter()
     }
     dependencies {
         classpath(kotlinModule("gradle-plugin", kotlin_version))
@@ -19,11 +23,15 @@ apply {
     plugin("kotlin")
 }
 
+plugins {
+    application
+}
+
 val kotlin_version: String by extra
-val vertxVersion = "3.5.0"
+val vertxVersion = "3.5.1"
 
 repositories {
-    mavenCentral()
+    jcenter()
 }
 
 dependencies {
@@ -37,4 +45,22 @@ dependencies {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
+}
+
+val mainVerticleName = "com.okamidev.api.MainVerticle"
+val launcherClass = "io.vertx.core.Launcher"
+
+
+tasks {
+    "run"(JavaExec::class) {
+        val watchForChange = "src/**/*"
+        val doOnChange = "./gradlew classes"
+
+        main = launcherClass
+
+        args("run", mainVerticleName,
+                "--redeploy=$watchForChange",
+                "--launcher-class=$launcherClass",
+                "--on-redeploy=$doOnChange")
+    }
 }
