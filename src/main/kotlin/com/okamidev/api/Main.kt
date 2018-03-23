@@ -1,6 +1,7 @@
 package com.okamidev.api
 
 import com.okamidev.philosopher.PhilosopherInteractor
+import com.okamidev.presenter.PhilosopherResponse
 import io.vertx.core.AbstractVerticle
 import io.vertx.core.Future
 import io.vertx.core.Handler
@@ -33,7 +34,7 @@ class MainVerticle : AbstractVerticle() {
     }
 
     val handlerPhilosopher = Handler<RoutingContext> { req ->
-        req.response().endWithJson(philosopherInteractor.listPhilosopher())
+        req.response().endWithJson(philosopherInteractor.listPhilosopher().map { PhilosopherResponse(it) })
     }
 
     fun HttpServerResponse.endWithJson(obj: Any) {
