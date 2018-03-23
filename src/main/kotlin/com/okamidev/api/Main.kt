@@ -34,10 +34,19 @@ class MainVerticle : AbstractVerticle() {
     private fun createRouter() = Router.router(vertx).apply {
         route().handler(CorsHandler.create("*").allowedMethod(HttpMethod.GET).allowedMethod(HttpMethod.POST))
         get("/").handler(handlerPhilosopher)
+        get("/:id").handler(handlerPhilosopherDetails)
     }
 
     val handlerPhilosopher = Handler<RoutingContext> { req ->
         req.response().endWithJson(philosopherInteractor.listPhilosopher().map { PhilosopherResponse(it) })
+    }
+
+    val handlerPhilosopherDetails = Handler<RoutingContext> { req ->
+        run {
+            val philosopherId = req.request().getParam("id")
+            val response = PhilosopherResponse(philosopherInteractor.getById(philosopherId))
+            req.response().endWithJson(response)
+        }
     }
 
     fun HttpServerResponse.endWithJson(obj: Any) {
