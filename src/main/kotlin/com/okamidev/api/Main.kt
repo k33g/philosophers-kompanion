@@ -5,10 +5,12 @@ import com.okamidev.presenter.PhilosopherResponse
 import io.vertx.core.AbstractVerticle
 import io.vertx.core.Future
 import io.vertx.core.Handler
+import io.vertx.core.http.HttpMethod
 import io.vertx.core.http.HttpServerResponse
 import io.vertx.core.json.Json
 import io.vertx.ext.web.Router
 import io.vertx.ext.web.RoutingContext
+import io.vertx.ext.web.handler.CorsHandler
 
 @Suppress("unused")
 class MainVerticle : AbstractVerticle() {
@@ -30,6 +32,7 @@ class MainVerticle : AbstractVerticle() {
     }
 
     private fun createRouter() = Router.router(vertx).apply {
+        route().handler(CorsHandler.create("*").allowedMethod(HttpMethod.GET).allowedMethod(HttpMethod.POST))
         get("/").handler(handlerPhilosopher)
     }
 
