@@ -6,7 +6,7 @@ import org.jetbrains.kotlin.js.translate.context.Namer.kotlin
 
 buildscript {
     var kotlin_version: String by extra
-    kotlin_version = "1.2.30"
+    kotlin_version = "1.2.31"
 
     repositories {
         jcenter()
