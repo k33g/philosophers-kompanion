@@ -10,7 +10,8 @@ class PhilosopherInteractor {
                             "I'm here to drink milk and kick ass. And i just finished my milk...",
                             "I'll just put this over here with the rest of the fire.",
                             "I like being weird, weird is all I’ve got. That and my sweet style"
-                    )
+                    ),
+                    false
             ),
             2 to Philosopher(2,
                     "Sheldon Cooper",
@@ -21,7 +22,8 @@ class PhilosopherInteractor {
                             "(3 knocks) Penny! (3 knocks) Penny! (3 knocks) Penny!",
                             "Don't be silly, I'm a fan of anything that tries to replace actual human contact.",
                             "The correct animal for inter-species super soldier is the koala. You would wind up with an army so cute, it couldn't be attacked."
-                    )
+                    ),
+                    false
             ),
             3 to Philosopher(3,
                     "Jeff Goldblum",

@@ -8,4 +8,5 @@ class PhilosopherResponse(philosopher: Philosopher) {
     val img = Base64.getEncoder().encodeToString(this.javaClass.getResource(philosopher.imgSrc).readBytes())
     val name = philosopher.name
     val quotes = philosopher.quotes
+    val real = philosopher.real
 }
