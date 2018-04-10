@@ -10,6 +10,7 @@ import io.vertx.core.http.HttpServerResponse
 import io.vertx.core.json.Json
 import io.vertx.ext.web.Router
 import io.vertx.ext.web.RoutingContext
+import io.vertx.ext.web.handler.BodyHandler
 import io.vertx.ext.web.handler.CorsHandler
 
 @Suppress("unused")
@@ -32,20 +33,32 @@ class MainVerticle : AbstractVerticle() {
     }
 
     private fun createRouter() = Router.router(vertx).apply {
-        route().handler(CorsHandler.create("*").allowedMethod(HttpMethod.GET).allowedMethod(HttpMethod.POST))
+        route().handler(CorsHandler.create("*").allowedHeader("Content-Type").allowedMethod(HttpMethod.GET).allowedMethod(HttpMethod.POST))
+                .handler(BodyHandler.create())
         get("/").handler(handlerPhilosopher)
         get("/:id").handler(handlerPhilosopherDetails)
+        post("/quote").consumes("application/json").handler(handlerAddQuote)
     }
 
-    val handlerPhilosopher = Handler<RoutingContext> { req ->
-        req.response().endWithJson(philosopherInteractor.listPhilosopher().map { PhilosopherResponse(it) })
-    }
-
-    val handlerPhilosopherDetails = Handler<RoutingContext> { req ->
+    val handlerAddQuote = Handler<RoutingContext> { routingContext ->
         run {
-            val philosopherId = req.request().getParam("id")
-            val response = PhilosopherResponse(philosopherInteractor.getById(philosopherId))
-            req.response().endWithJson(response)
+            val bodyAsJson = routingContext.bodyAsJson
+            val philosopherId = bodyAsJson.getInteger("philosopherId")
+            val newQuote = bodyAsJson.getString("quote")
+            philosopherInteractor.addQuote(philosopherId, newQuote)
+            routingContext.response().end()
+        }
+    }
+
+    val handlerPhilosopher = Handler<RoutingContext> { routingContext ->
+        routingContext.response().endWithJson(philosopherInteractor.listPhilosopher().map { PhilosopherResponse(it) })
+    }
+
+    val handlerPhilosopherDetails = Handler<RoutingContext> { routingContext ->
+        run {
+            val philosopherId = routingContext.request().getParam("id")
+            val response = PhilosopherResponse(philosopherInteractor.getById(philosopherId.toInt()))
+            routingContext.response().endWithJson(response)
         }
     }
 
