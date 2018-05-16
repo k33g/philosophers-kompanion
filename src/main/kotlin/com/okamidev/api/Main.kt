@@ -20,10 +20,11 @@ class MainVerticle : AbstractVerticle() {
 
     override fun start(startFuture: Future<Void>) {
         val router = createRouter()
+        val httpPort = System.getenv("PORT")?.toInt() ?: 8080
 
         vertx.createHttpServer()
                 .requestHandler { router.accept(it) }
-                .listen(config().getInteger("http.port", 8080)) { result ->
+                .listen(config().getInteger("http.port", httpPort)) { result ->
                     if (result.succeeded()) {
                         startFuture.complete()
                     } else {
